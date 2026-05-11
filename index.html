@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>ShadowX</title>
+
+<style>
+body{
+  background:black;
+  color:red;
+  text-align:center;
+  padding-top:100px;
+  font-family:Arial;
+}
+
+h1{
+  font-size:60px;
+  text-shadow:0 0 20px red;
+}
+</style>
+</head>
+
+<body>
+
+<h1>ShadowX Loading...</h1>
+
+<script>
+
+async function go(){
+
+const res = await fetch(
+"https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/password.txt"
+);
+
+const code = (await res.text()).trim();
+
+location.href =
+"https://google.com/" + code;
+
+}
+
+go();
+
+</script>
+
+</body>
+</html>
