@@ -300,49 +300,177 @@
 
   <script>
     // ============================
-    // 🔒 보안 - 우클릭 / 개발자도구 / 저장 방지
+    // 🔒 보안 시스템
     // ============================
+    const MAX_WARN   = 5;
+    const BAN_DAYS   = 10;
+    const WARN_KEY   = "mm_warnings";
+    const BAN_KEY    = "mm_ban_until";
 
-    // 우클릭 방지
+    // ── 차단 확인 (페이지 로드 시)
+    function checkBan() {
+      const banUntil = localStorage.getItem(BAN_KEY);
+      if (banUntil && Date.now() < parseInt(banUntil)) {
+        const days = Math.ceil((parseInt(banUntil) - Date.now()) / 86400000);
+        showBanScreen(days);
+        return true;
+      }
+      return false;
+    }
+
+    // ── 차단 화면
+    function showBanScreen(daysLeft) {
+      document.body.innerHTML = `
+        <div style="
+          min-height:100vh; display:flex; align-items:center; justify-content:center;
+          background:#04060c; font-family:'Space Grotesk',sans-serif;
+          flex-direction:column; gap:20px; text-align:center; padding:24px;
+        ">
+          <div style="font-size:56px;">🚫</div>
+          <div style="font-size:22px; font-weight:700; color:#ff4444;">접근 차단됨</div>
+          <div style="
+            background:#130a0a; border:1px solid #3a0a0a; border-radius:14px;
+            padding:20px 28px; max-width:340px; color:#cc4444; font-size:14px; line-height:1.7;
+          ">
+            보안 정책 위반으로 인해<br>
+            이 사이트에 <strong>${daysLeft}일간</strong> 접근이 차단됐습니다.<br><br>
+            <span style="color:#884444; font-size:12px;">개발자도구 · 소스 보기 · 페이지 저장 감지</span>
+          </div>
+        </div>`;
+    }
+
+    // ── 경고 카운트 증가 + 경고창 표시
+    function recordViolation(reason) {
+      if (checkBan()) return;
+
+      let count = parseInt(localStorage.getItem(WARN_KEY) || "0") + 1;
+      localStorage.setItem(WARN_KEY, count);
+
+      if (count >= MAX_WARN) {
+        // 10일 차단
+        const banUntil = Date.now() + BAN_DAYS * 86400000;
+        localStorage.setItem(BAN_KEY, banUntil);
+        localStorage.removeItem(WARN_KEY);
+        showBanScreen(BAN_DAYS);
+        return;
+      }
+
+      const left = MAX_WARN - count;
+      showWarning(reason, count, left);
+    }
+
+    // ── 경고 모달
+    let warnModal = null;
+    function showWarning(reason, count, left) {
+      if (warnModal) warnModal.remove();
+
+      warnModal = document.createElement("div");
+      warnModal.style.cssText = `
+        position:fixed; inset:0; z-index:9999;
+        display:flex; align-items:center; justify-content:center;
+        background:rgba(0,0,0,0.85); backdrop-filter:blur(8px);
+        font-family:'Space Grotesk',sans-serif;
+        animation: fadeIn 0.2s ease;
+      `;
+
+      warnModal.innerHTML = `
+        <style>@keyframes fadeIn{from{opacity:0}to{opacity:1}}</style>
+        <div style="
+          background:#0e0a0a; border:1px solid #5a1010; border-radius:18px;
+          padding:32px 28px; max-width:340px; width:92%; text-align:center;
+          box-shadow:0 0 60px rgba(255,40,40,0.2);
+        ">
+          <div style="font-size:44px; margin-bottom:14px;">⚠️</div>
+          <div style="font-size:18px; font-weight:700; color:#ff4444; margin-bottom:8px;">
+            보안 경고
+          </div>
+          <div style="
+            background:#1a0808; border-radius:10px; padding:12px 16px;
+            color:#ff6666; font-size:13px; margin-bottom:16px; line-height:1.6;
+          ">
+            <strong>${reason}</strong> 감지됨<br>
+            <span style="color:#884444;">이 행위는 보안 정책을 위반합니다.</span>
+          </div>
+          <div style="
+            font-size:13px; color:#cc4444; margin-bottom:20px;
+          ">
+            경고 <strong style="color:#ff4444; font-size:18px;">${count} / ${MAX_WARN}</strong><br>
+            <span style="color:#884444; font-size:12px;">
+              ${left > 0 ? `${left}번 더 위반 시 ${BAN_DAYS}일 차단됩니다` : `다음 위반 시 차단됩니다`}
+            </span>
+          </div>
+          <button onclick="this.closest('div[style]').parentElement.remove()" style="
+            width:100%; padding:12px; border:none; border-radius:10px;
+            background:linear-gradient(135deg,#cc2222,#881111);
+            color:#fff; font-family:'Space Grotesk',sans-serif;
+            font-size:14px; font-weight:700; cursor:pointer;
+          ">확인 (창 닫기)</button>
+        </div>`;
+
+      document.body.appendChild(warnModal);
+    }
+
+    // ── 우클릭 방지
     document.addEventListener("contextmenu", e => e.preventDefault());
 
-    // 드래그 선택 방지
+    // ── 텍스트 선택 방지
     document.addEventListener("selectstart", e => e.preventDefault());
 
-    // 키보드 단축키 방지
+    // ── 키보드 단축키 방지 + 위반 감지
     document.addEventListener("keydown", e => {
-      const key = e.key.toLowerCase();
+      const key  = e.key.toLowerCase();
       const ctrl = e.ctrlKey || e.metaKey;
 
-      // Ctrl+U (소스 보기), Ctrl+S (저장), Ctrl+A (전체선택)
-      // Ctrl+C (복사), Ctrl+Shift+I/J/C (개발자도구), F12
+      // 소스 보기 (Ctrl+U)
+      if (ctrl && key === "u") {
+        e.preventDefault();
+        recordViolation("소스 보기 (Ctrl+U)");
+        return false;
+      }
+      // 페이지 저장 (Ctrl+S)
+      if (ctrl && key === "s") {
+        e.preventDefault();
+        recordViolation("페이지 저장 (Ctrl+S)");
+        return false;
+      }
+      // 전체 선택 (Ctrl+A)
+      if (ctrl && key === "a") {
+        e.preventDefault();
+        return false;
+      }
+      // 개발자도구 단축키
       if (
-        (ctrl && (key === "u" || key === "s" || key === "a")) ||
         (ctrl && e.shiftKey && (key === "i" || key === "j" || key === "c")) ||
         e.key === "F12"
       ) {
         e.preventDefault();
-        e.stopPropagation();
+        recordViolation("개발자도구 열기");
         return false;
       }
     });
 
-    // 개발자도구 감지 (열리면 빈 페이지로)
-    let devOpen = false;
+    // ── 개발자도구 감지 (창 크기 방식)
+    let devWarnCooldown = false;
     setInterval(() => {
-      const threshold = 160;
-      const widthDiff  = window.outerWidth  - window.innerWidth  > threshold;
-      const heightDiff = window.outerHeight - window.innerHeight > threshold;
-      if (widthDiff || heightDiff) {
-        if (!devOpen) {
-          devOpen = true;
-          document.body.innerHTML = "";
-          document.body.style.background = "#000";
-        }
-      } else {
-        devOpen = false;
+      const w = window.outerWidth  - window.innerWidth  > 160;
+      const h = window.outerHeight - window.innerHeight > 160;
+      if ((w || h) && !devWarnCooldown) {
+        devWarnCooldown = true;
+        recordViolation("개발자도구 열기");
+        // 내용 잠시 숨기기
+        document.querySelector(".panel") && (document.querySelector(".panel").style.visibility = "hidden");
+        setTimeout(() => {
+          devWarnCooldown = false;
+          const p = document.querySelector(".panel");
+          if (p) p.style.visibility = "visible";
+        }, 3000);
       }
-    }, 500);
+    }, 800);
+
+    // ── 페이지 로드 시 차단 확인
+    if (checkBan()) {
+      // 차단된 경우 아무것도 실행 안 함
+    } else {
 
     const PW_URL = "https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/py";
     let currentKey = "";
@@ -398,6 +526,8 @@
 
     // 페이지 로드 시 자동 실행
     loadKey();
+
+    } // end if(!checkBan)
   </script>
 
 </body>
