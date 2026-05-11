@@ -20,9 +20,37 @@ font-size:60px;
 text-shadow:0 0 20px red;
 }
 
-p{
-font-size:20px;
+#box{
+margin:auto;
+margin-top:40px;
+width:400px;
+padding:20px;
+border:2px solid red;
+border-radius:15px;
+box-shadow:0 0 20px red;
+background:#111;
+}
+
+#code{
+font-size:28px;
 color:white;
+margin-top:20px;
+word-break:break-all;
+}
+
+button{
+margin-top:25px;
+padding:12px 30px;
+font-size:20px;
+background:red;
+border:none;
+border-radius:10px;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+transform:scale(1.05);
 }
 
 </style>
@@ -31,11 +59,22 @@ color:white;
 <body>
 
 <h1>ShadowX</h1>
-<p>Verifying access...</p>
+
+<div id="box">
+
+<p>Loading Key...</p>
+
+<div id="code">...</div>
+
+<button onclick="copyCode()">COPY</button>
+
+</div>
 
 <script>
 
-async function go(){
+let currentCode = "";
+
+async function loadCode(){
 
 const ref = document.referrer.toLowerCase();
 
@@ -53,25 +92,21 @@ const res = await fetch(
 "https://raw.githubusercontent.com/fhdhd9795-spec/py/main/password.txt"
 );
 
-const code = (await res.text()).trim();
+currentCode = (await res.text()).trim();
 
-if(code=="hello12333333333311"){
-
-window.location.href = "https://google.com";
+document.getElementById("code").innerText = currentCode;
 
 }
 
-else{
+function copyCode(){
 
-document.body.innerHTML = `
-<h1>INVALID CODE</h1>
-`;
+navigator.clipboard.writeText(currentCode);
 
-}
+alert("Copied!");
 
 }
 
-go();
+loadCode();
 
 </script>
 
