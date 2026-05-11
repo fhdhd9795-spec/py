@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Mineral Master · Panel</title>
+  <title>Mineral Master · Key Panel</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -31,32 +31,14 @@
       pointer-events:none;
     }
     .wrap{
-      width:min(460px,100%);position:relative;z-index:1;
+      width:min(420px,100%);position:relative;z-index:1;
       animation:rise .45s cubic-bezier(.34,1.56,.64,1) both;
     }
     @keyframes rise{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
 
-    /* 탭 바 */
-    .tab-bar{
-      display:flex;gap:6px;margin-bottom:12px;
-      background:var(--card);border:1px solid rgba(0,229,200,.12);
-      border-radius:14px;padding:5px;
-    }
-    .tab-btn{
-      flex:1;padding:10px;border:none;border-radius:10px;cursor:pointer;
-      font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;
-      background:transparent;color:var(--muted);transition:all .2s;
-    }
-    .tab-btn.active{
-      background:linear-gradient(135deg,rgba(0,229,200,.15),rgba(0,168,150,.06));
-      color:var(--teal);box-shadow:0 0 0 1px rgba(0,229,200,.2);
-    }
-    .tab-btn:hover:not(.active){color:var(--text)}
-
-    /* 패널 */
     .panel{
       background:var(--card);border:1px solid rgba(0,229,200,.18);
-      border-radius:20px;padding:30px 26px 24px;
+      border-radius:20px;padding:32px 28px 26px;
       box-shadow:0 0 60px rgba(0,229,200,.07),0 24px 48px rgba(0,0,0,.5);
       position:relative;
     }
@@ -64,26 +46,24 @@
       content:'';position:absolute;top:0;left:32px;right:32px;height:1px;
       background:linear-gradient(90deg,transparent,var(--teal),transparent);
     }
-    .page{display:none}
-    .page.active{display:block}
 
-    /* 탭1 */
     .badge{
-      width:50px;height:50px;border-radius:13px;
+      width:52px;height:52px;border-radius:14px;
       background:linear-gradient(135deg,rgba(0,229,200,.15),rgba(0,168,150,.05));
       border:1px solid rgba(0,229,200,.25);
       display:flex;align-items:center;justify-content:center;
-      font-size:22px;margin-bottom:16px;
+      font-size:24px;margin-bottom:18px;
     }
-    h1{font-size:21px;font-weight:700;color:#fff;margin-bottom:4px}
-    .subtitle{font-size:13px;color:var(--muted);margin-bottom:24px}
+    h1{font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
+    .subtitle{font-size:13px;color:var(--muted);margin-bottom:26px}
+
     .key-wrap{
       background:var(--card2);border:1px solid var(--border);
-      border-radius:13px;padding:18px 20px;margin-bottom:13px;
+      border-radius:14px;padding:20px 22px;margin-bottom:12px;
     }
     .key-label{
-      font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
-      color:var(--teal-dim);margin-bottom:9px;
+      font-size:10px;font-weight:600;letter-spacing:2px;
+      text-transform:uppercase;color:var(--teal-dim);margin-bottom:10px;
     }
     .key-value{
       font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;
@@ -98,62 +78,42 @@
       animation:blink 1.4s ease-in-out infinite;flex-shrink:0;
     }
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+    /* 버튼들 */
     .copy-btn{
       width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;
       background:linear-gradient(135deg,var(--teal),#00b8a0);
       color:#000;font-family:'Space Grotesk',sans-serif;
-      font-size:15px;font-weight:700;transition:all .2s;
+      font-size:15px;font-weight:700;transition:all .2s;margin-bottom:8px;
     }
     .copy-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,229,200,.3)}
     .copy-btn.copied{background:linear-gradient(135deg,#00d46e,#00a855)}
 
-    /* 탭2 */
-    .enc-title{
-      font-size:11px;font-weight:700;letter-spacing:2.5px;
-      text-transform:uppercase;color:var(--teal-dim);margin-bottom:14px;
+    .gen-btn{
+      width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;cursor:pointer;
+      background:var(--card2);color:var(--text);
+      font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;
+      transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;
     }
-    .steps{display:flex;gap:5px;margin-bottom:14px;align-items:center}
-    .step{
-      flex:1;background:var(--card2);border:1px solid var(--border);
-      border-radius:9px;padding:7px 5px;text-align:center;
+    .gen-btn:hover{border-color:var(--teal-dim);color:var(--teal)}
+    .gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .gen-btn.loading{border-color:rgba(0,229,200,.3);color:var(--teal-dim)}
+
+    /* 상태 메시지 */
+    .status{
+      margin-top:10px;font-size:12px;text-align:center;
+      color:var(--muted);min-height:18px;transition:color .2s;
     }
-    .step .sn{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
-    .step .sv{font-size:10px;font-weight:600;color:var(--teal)}
-    .sarr{color:var(--muted);font-size:11px;flex-shrink:0}
-    label{
-      font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
-      color:var(--muted);display:block;margin-bottom:6px;
+    .status.success{color:#00d46e}
+    .status.error{color:#ff6060}
+    .status.info{color:var(--teal-dim)}
+
+    /* 구분선 */
+    .divider{
+      display:flex;align-items:center;gap:10px;margin:16px 0;
     }
-    input[type=text]{
-      width:100%;padding:11px 13px;
-      background:var(--card2);border:1px solid var(--border);border-radius:10px;
-      color:#fff;font-family:'JetBrains Mono',monospace;font-size:13px;
-      outline:none;transition:border-color .2s;margin-bottom:10px;
-      -webkit-user-select:text;user-select:text;
-    }
-    input:focus{border-color:var(--teal-dim)}
-    .sr{
-      background:#08141a;border:1px solid #0a2020;border-radius:8px;
-      padding:9px 11px;margin-bottom:5px;
-    }
-    .sr .rl{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-    .sr .rv{font-family:'JetBrains Mono',monospace;font-size:11px;color:#88c8c0;word-break:break-all;line-height:1.4}
-    .result-box{
-      background:var(--card2);border:1px solid var(--border);border-radius:10px;
-      padding:13px;font-family:'JetBrains Mono',monospace;font-size:12px;
-      color:var(--teal);word-break:break-all;line-height:1.6;
-      min-height:42px;margin-bottom:9px;
-    }
-    .result-box.empty{color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:12px}
-    .btn-row{display:flex;gap:7px;margin-bottom:16px}
-    .btn-c{
-      flex:1;padding:11px;border:1px solid var(--border);border-radius:9px;
-      background:transparent;color:var(--teal);cursor:pointer;
-      font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;
-      transition:all .2s;
-    }
-    .btn-c:hover{border-color:var(--teal-dim)}
-    .divider{height:1px;background:var(--border);margin:14px 0}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .divider span{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
 
     /* 토스트 */
     .toast{
@@ -164,102 +124,89 @@
       font-size:13px;font-weight:700;padding:12px 24px;
       border-radius:100px;box-shadow:0 8px 24px rgba(0,212,110,.4);
       transition:transform .3s cubic-bezier(.34,1.56,.64,1);
-      white-space:nowrap;z-index:99;
+      white-space:nowrap;z-index:99;pointer-events:none;
     }
     .toast.show{transform:translateX(-50%) translateY(0)}
+
+    /* 스피너 */
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spinner{
+      display:inline-block;width:14px;height:14px;
+      border:2px solid rgba(0,229,200,.3);border-top-color:var(--teal);
+      border-radius:50%;animation:spin .7s linear infinite;
+    }
   </style>
 </head>
 <body>
 <div class="wrap">
-
-  <!-- 탭 바 -->
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab(0)">🔑 오늘의 키</button>
-    <button class="tab-btn"        onclick="switchTab(1)">🔐 암호화 도구</button>
-  </div>
-
   <div class="panel">
+    <div class="badge">🔑</div>
+    <h1>Mineral Master</h1>
+    <p class="subtitle">오늘의 접속 키를 복사하세요</p>
 
-    <!-- ══ 탭1: 오늘의 키 ══ -->
-    <div class="page active" id="page0">
-      <div class="badge">🔑</div>
-      <h1>Mineral Master</h1>
-      <p class="subtitle">오늘의 접속 키를 복사하세요</p>
-      <div class="key-wrap">
-        <div class="key-label">ACCESS KEY</div>
-        <div class="key-value loading" id="keyDisplay">불러오는 중...</div>
-      </div>
-      <button class="copy-btn" id="copyBtn" disabled onclick="copyKey()">복사하기</button>
+    <div class="key-wrap">
+      <div class="key-label">ACCESS KEY</div>
+      <div class="key-value loading" id="keyDisplay">불러오는 중...</div>
     </div>
 
-    <!-- ══ 탭2: 암호화 도구 ══ -->
-    <div class="page" id="page1">
-      <div class="enc-title">암호화 도구</div>
-      <div class="steps">
-        <div class="step"><div class="sn">1</div><div class="sv">치환+반전</div></div>
-        <div class="sarr">→</div>
-        <div class="step"><div class="sn">2</div><div class="sv">Base64</div></div>
-        <div class="sarr">→</div>
-        <div class="step"><div class="sn">3</div><div class="sv">XOR</div></div>
-        <div class="sarr">→</div>
-        <div class="step"><div class="sn">4</div><div class="sv">Base64</div></div>
-      </div>
+    <button class="copy-btn" id="copyBtn" disabled onclick="copyKey()">
+      복사하기
+    </button>
 
-      <label>원본 비번</label>
-      <input type="text" id="plainInput" placeholder="예: Hello@123" oninput="autoEncrypt()"/>
-      <div class="sr"><div class="rl">Step 1 · 치환+반전</div><div class="rv" id="s1">-</div></div>
-      <div class="sr"><div class="rl">Step 2 · Base64</div><div class="rv" id="s2">-</div></div>
-      <div class="sr"><div class="rl">Step 3 · XOR</div><div class="rv" id="s3">-</div></div>
-      <div style="margin-top:10px">
-        <label>📋 py 파일에 저장할 값</label>
-        <div class="result-box empty" id="encResult">비번을 입력하면 자동으로 암호화됩니다</div>
-      </div>
-      <div class="btn-row">
-        <button class="btn-c" onclick="copyEnc()">암호문 복사</button>
-      </div>
+    <div class="divider"><span>실험용</span></div>
 
-      <div class="divider"></div>
+    <button class="gen-btn" id="genBtn" onclick="generateNewPassword()">
+      🎲 새 비번 만들기
+    </button>
 
-      <label>복호화 확인</label>
-      <input type="text" id="encInput" placeholder="암호화된 값 붙여넣기..." oninput="autoDecrypt()"/>
-      <div class="result-box empty" id="decResult">암호문을 입력하면 자동으로 복호화됩니다</div>
-    </div>
-
+    <div class="status" id="statusMsg"></div>
   </div>
 </div>
 <div class="toast" id="toast">✅ 복사됐습니다!</div>
 
 <script>
-  // ── 보안
-  const MAX_WARN=5,BAN_DAYS=10,WARN_KEY="mm_warnings",BAN_KEY="mm_ban_until";
+  // ============================
+  // ⚙ 설정 (여기만 수정)
+  // ============================
+  const PW_URL     = "https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/py";
+  const SECRET_KEY = "M1n3r@lK3y";   // encryptor, mineral.lua 와 동일하게
+  const GH_TOKEN   = "여기에_GitHub_토큰_입력";  // PAT (contents:write 권한)
+  const GH_OWNER   = "fhdhd9795-spec";
+  const GH_REPO    = "py";
+  const GH_FILE    = "py";
+
+  // ============================
+  // 보안
+  // ============================
+  const MAX_WARN=5,BAN_DAYS=10,WK="mm_warnings",BK="mm_ban_until";
   function checkBan(){
-    const b=localStorage.getItem(BAN_KEY);
+    const b=localStorage.getItem(BK);
     if(b&&Date.now()<parseInt(b)){
       const d=Math.ceil((parseInt(b)-Date.now())/86400000);
-      document.body.innerHTML=`<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#04060c;font-family:'Space Grotesk',sans-serif;flex-direction:column;gap:20px;text-align:center;padding:24px"><div style="font-size:56px">🚫</div><div style="font-size:22px;font-weight:700;color:#ff4444">접근 차단됨</div><div style="background:#130a0a;border:1px solid #3a0a0a;border-radius:14px;padding:20px 28px;max-width:340px;color:#cc4444;font-size:14px;line-height:1.7">보안 정책 위반으로 인해<br>이 사이트에 <strong>${d}일간</strong> 접근이 차단됐습니다.</div></div>`;
+      document.body.innerHTML=`<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#04060c;font-family:'Space Grotesk',sans-serif;flex-direction:column;gap:20px;text-align:center;padding:24px"><div style="font-size:56px">🚫</div><div style="font-size:22px;font-weight:700;color:#ff4444">접근 차단됨</div><div style="background:#130a0a;border:1px solid #3a0a0a;border-radius:14px;padding:20px 28px;max-width:340px;color:#cc4444;font-size:14px;line-height:1.7">보안 정책 위반으로 이 사이트에<br><strong>${d}일간</strong> 접근이 차단됐습니다.</div></div>`;
       return true;
     }
     return false;
   }
   function recordViolation(reason){
     if(checkBan())return;
-    let c=parseInt(localStorage.getItem(WARN_KEY)||"0")+1;
-    localStorage.setItem(WARN_KEY,c);
-    if(c>=MAX_WARN){localStorage.setItem(BAN_KEY,Date.now()+BAN_DAYS*86400000);localStorage.removeItem(WARN_KEY);checkBan();return;}
+    let c=parseInt(localStorage.getItem(WK)||"0")+1;
+    localStorage.setItem(WK,c);
+    if(c>=MAX_WARN){localStorage.setItem(BK,Date.now()+BAN_DAYS*86400000);localStorage.removeItem(WK);checkBan();return;}
     const left=MAX_WARN-c;
     const m=document.createElement("div");
     m.style.cssText="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);font-family:'Space Grotesk',sans-serif";
-    m.innerHTML=`<div style="background:#0e0a0a;border:1px solid #5a1010;border-radius:18px;padding:32px 28px;max-width:320px;width:92%;text-align:center;box-shadow:0 0 60px rgba(255,40,40,.2)"><div style="font-size:40px;margin-bottom:12px">⚠️</div><div style="font-size:18px;font-weight:700;color:#ff4444;margin-bottom:8px">보안 경고</div><div style="background:#1a0808;border-radius:10px;padding:12px;color:#ff6666;font-size:13px;margin-bottom:14px;line-height:1.6"><strong>${reason}</strong> 감지됨</div><div style="font-size:13px;color:#cc4444;margin-bottom:18px">경고 <strong style="color:#ff4444;font-size:18px">${c} / ${MAX_WARN}</strong><br><span style="color:#884444;font-size:12px">${left}번 더 위반 시 ${BAN_DAYS}일 차단</span></div><button onclick="this.closest('div').parentElement.remove()" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#cc2222,#881111);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;cursor:pointer">확인</button></div>`;
+    m.innerHTML=`<div style="background:#0e0a0a;border:1px solid #5a1010;border-radius:18px;padding:32px 28px;max-width:320px;width:92%;text-align:center"><div style="font-size:40px;margin-bottom:12px">⚠️</div><div style="font-size:18px;font-weight:700;color:#ff4444;margin-bottom:8px">보안 경고</div><div style="background:#1a0808;border-radius:10px;padding:12px;color:#ff6666;font-size:13px;margin-bottom:14px;line-height:1.6"><strong>${reason}</strong> 감지됨</div><div style="font-size:13px;color:#cc4444;margin-bottom:18px">경고 <strong style="color:#ff4444;font-size:18px">${c}/${MAX_WARN}</strong><br><span style="color:#884444;font-size:12px">${left}번 더 위반 시 ${BAN_DAYS}일 차단</span></div><button onclick="this.closest('div').parentElement.remove()" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#cc2222,#881111);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;cursor:pointer">확인</button></div>`;
     document.body.appendChild(m);
   }
   document.addEventListener("contextmenu",e=>e.preventDefault());
-  document.addEventListener("selectstart",e=>{if(!e.target.closest("input"))e.preventDefault();});
+  document.addEventListener("selectstart",e=>e.preventDefault());
   document.addEventListener("keydown",e=>{
     const k=e.key.toLowerCase(),c=e.ctrlKey||e.metaKey;
     if(c&&k==="u"){e.preventDefault();recordViolation("소스 보기");return false;}
     if(c&&k==="s"){e.preventDefault();recordViolation("페이지 저장");return false;}
-    if(c&&k==="a"&&!e.target.closest("input")){e.preventDefault();return false;}
-    if((c&&e.shiftKey&&"ijc".includes(k))||e.key==="F12"){e.preventDefault();recordViolation("개발자도구 열기");return false;}
+    if(c&&k==="a"){e.preventDefault();return false;}
+    if((c&&e.shiftKey&&"ijc".includes(k))||e.key==="F12"){e.preventDefault();recordViolation("개발자도구");return false;}
   });
   let dc=false;
   setInterval(()=>{
@@ -270,76 +217,151 @@
     }
   },800);
 
-  // ── 암호화 로직
-  const SECRET_KEY="M1n3r@lK3y";
+  // ============================
+  // 암호화 로직
+  // ============================
   const N2S={'0':'!','1':'@','2':'#','3':'$','4':'%','5':'^','6':'&','7':'*','8':'(','9':')'};
   const S2N={'!':'0','@':'1','#':'2','$':'3','%':'4','^':'5','&':'6','*':'7','(':'8',')':'9'};
   function cipher(t){let r='';for(const c of t){if(c>='a'&&c<='z')r+=c.toUpperCase();else if(c>='A'&&c<='Z')r+=c.toLowerCase();else if(N2S[c])r+=N2S[c];else if(S2N[c])r+=S2N[c];else r+=c;}return r.split('').reverse().join('');}
   function revCipher(t){const rv=t.split('').reverse().join('');let r='';for(const c of rv){if(c>='a'&&c<='z')r+=c.toUpperCase();else if(c>='A'&&c<='Z')r+=c.toLowerCase();else if(N2S[c])r+=N2S[c];else if(S2N[c])r+=S2N[c];else r+=c;}return r;}
   function xorStr(t,k){let r='';for(let i=0;i<t.length;i++)r+=String.fromCharCode(t.charCodeAt(i)^k.charCodeAt(i%k.length));return r;}
-  function encrypt(p){const s1=cipher(p);const s2=btoa(unescape(encodeURIComponent(s1)));const s3=xorStr(s2,SECRET_KEY);const s4=btoa(s3);return{s1,s2,s4};}
+  function encrypt(p){const s1=cipher(p);const s2=btoa(unescape(encodeURIComponent(s1)));const s3=xorStr(s2,SECRET_KEY);return btoa(s3);}
   function decrypt(enc){try{const s1=atob(enc.trim());const s2=xorStr(s1,SECRET_KEY);const s3=decodeURIComponent(escape(atob(s2)));return revCipher(s3);}catch{return null;}}
 
-  // ── 탭 전환
-  function switchTab(i){
-    document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
-    document.querySelectorAll('.page').forEach((p,j)=>p.classList.toggle('active',j===i));
+  // ============================
+  // 랜덤 비번 생성 (10자리)
+  // ============================
+  function generatePassword(){
+    const lower='abcdefghijklmnopqrstuvwxyz';
+    const upper='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const digits='0123456789';
+    const special='!@#$%^&*()';
+    const all=lower+upper+digits+special;
+    let pwd=[
+      lower[Math.floor(Math.random()*lower.length)],
+      lower[Math.floor(Math.random()*lower.length)],
+      upper[Math.floor(Math.random()*upper.length)],
+      upper[Math.floor(Math.random()*upper.length)],
+      digits[Math.floor(Math.random()*digits.length)],
+      digits[Math.floor(Math.random()*digits.length)],
+      special[Math.floor(Math.random()*special.length)],
+      special[Math.floor(Math.random()*special.length)],
+    ];
+    for(let i=0;i<2;i++)pwd.push(all[Math.floor(Math.random()*all.length)]);
+    // 섞기
+    for(let i=pwd.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pwd[i],pwd[j]]=[pwd[j],pwd[i]];}
+    return pwd.join('');
   }
 
-  // ── 탭1
-  const PW_URL="https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/py";
-  let currentKey="";
-  async function loadKey(){
-    const d=document.getElementById("keyDisplay"),btn=document.getElementById("copyBtn");
-    d.className="key-value loading";d.textContent="불러오는 중...";btn.disabled=true;
+  // ============================
+  // GitHub API - py 파일 업데이트
+  // ============================
+  async function getFileSHA(){
+    const res=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,{
+      headers:{Authorization:`token ${GH_TOKEN}`,Accept:'application/vnd.github+json'}
+    });
+    const data=await res.json();
+    return data.sha;
+  }
+
+  async function updateFile(content,sha){
+    const res=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,{
+      method:'PUT',
+      headers:{Authorization:`token ${GH_TOKEN}`,Accept:'application/vnd.github+json','Content-Type':'application/json'},
+      body:JSON.stringify({
+        message:'🔐 Auto: new password generated',
+        content:btoa(unescape(encodeURIComponent(content))),
+        sha
+      })
+    });
+    return res.ok;
+  }
+
+  // ============================
+  // 새 비번 만들기
+  // ============================
+  async function generateNewPassword(){
+    const btn=document.getElementById('genBtn');
+    const status=document.getElementById('statusMsg');
+
+    btn.disabled=true;
+    btn.innerHTML=`<span class="spinner"></span> 생성 중...`;
+    btn.className='gen-btn loading';
+    status.className='status info';
+    status.textContent='새 비번 생성 중...';
+
     try{
-      const res=await fetch(PW_URL+"?t="+Date.now());
+      // 1. 랜덤 비번 생성
+      const newPwd=generatePassword();
+      status.textContent=`✅ 생성됨: ${newPwd} → 암호화 중...`;
+
+      // 2. 암호화
+      const encrypted=encrypt(newPwd);
+
+      // 3. GitHub 파일 SHA 가져오기
+      status.textContent='GitHub 파일 업데이트 중...';
+      const sha=await getFileSHA();
+
+      // 4. py 파일 업데이트
+      const ok=await updateFile(encrypted,sha);
+
+      if(ok){
+        status.className='status success';
+        status.textContent=`🎉 완료! 새 비번: ${newPwd}`;
+        // 화면 키 새로고침
+        setTimeout(()=>loadKey(),1500);
+      }else{
+        throw new Error('업데이트 실패');
+      }
+    }catch(e){
+      status.className='status error';
+      status.textContent='⚠ 실패: GitHub 토큰을 확인해주세요';
+    }finally{
+      btn.disabled=false;
+      btn.innerHTML='🎲 새 비번 만들기';
+      btn.className='gen-btn';
+    }
+  }
+
+  // ============================
+  // 키 불러오기 + 복사
+  // ============================
+  let currentKey='';
+  async function loadKey(){
+    const d=document.getElementById('keyDisplay');
+    const btn=document.getElementById('copyBtn');
+    d.className='key-value loading';d.textContent='불러오는 중...';btn.disabled=true;
+    try{
+      const res=await fetch(PW_URL+'?t='+Date.now());
       const raw=(await res.text()).trim();
       const text=decrypt(raw)||raw;
       if(!text)throw new Error();
       currentKey=text;
-      d.className="key-value";
+      d.className='key-value';
       d.innerHTML=`<span class="dot"></span>${text}`;
       btn.disabled=false;
-    }catch{d.className="key-value error";d.textContent="⚠ 불러오기 실패";btn.disabled=true;}
+    }catch{
+      d.className='key-value error';
+      d.textContent='⚠ 불러오기 실패';
+      btn.disabled=true;
+    }
   }
+
   function copyKey(){
     if(!currentKey)return;
     navigator.clipboard.writeText(currentKey).then(()=>{
-      const btn=document.getElementById("copyBtn");
-      btn.textContent="✓ 복사됐습니다!";btn.classList.add("copied");
+      const btn=document.getElementById('copyBtn');
+      btn.textContent='✓ 복사됐습니다!';btn.classList.add('copied');
       showToast();
-      setTimeout(()=>{btn.textContent="복사하기";btn.classList.remove("copied");},2000);
+      setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('copied');},2000);
     });
   }
 
-  // ── 탭2
-  function autoEncrypt(){
-    const plain=document.getElementById("plainInput").value;
-    const r=document.getElementById("encResult");
-    if(!plain){document.getElementById("s1").textContent="-";document.getElementById("s2").textContent="-";document.getElementById("s3").textContent="-";r.textContent="비번을 입력하면 자동으로 암호화됩니다";r.className="result-box empty";return;}
-    const{s1,s2,s4}=encrypt(plain);
-    document.getElementById("s1").textContent=s1;
-    document.getElementById("s2").textContent=s2;
-    document.getElementById("s3").textContent="[XOR 처리됨]";
-    r.textContent=s4;r.className="result-box";
+  function showToast(){
+    const t=document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
   }
-  function autoDecrypt(){
-    const enc=document.getElementById("encInput").value.trim();
-    const r=document.getElementById("decResult");
-    if(!enc){r.textContent="암호문을 입력하면 자동으로 복호화됩니다";r.className="result-box empty";return;}
-    const res=decrypt(enc);
-    r.textContent=res||"⚠ 복호화 실패 (키 또는 암호문 오류)";
-    r.className="result-box";
-  }
-  function copyEnc(){
-    const r=document.getElementById("encResult");
-    if(r.classList.contains("empty"))return;
-    navigator.clipboard.writeText(r.textContent).then(()=>showToast());
-  }
-
-  // ── 토스트
-  function showToast(){const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200);}
 
   if(!checkBan())loadKey();
 </script>
