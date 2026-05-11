@@ -49,11 +49,8 @@ color:white;
 cursor:pointer;
 }
 
-button:hover{
-transform:scale(1.05);
-}
-
 </style>
+
 </head>
 
 <body>
@@ -62,9 +59,9 @@ transform:scale(1.05);
 
 <div id="box">
 
-<p>Loading Key...</p>
+<p>Current Key</p>
 
-<div id="code">...</div>
+<div id="code">Loading...</div>
 
 <button onclick="copyCode()">COPY</button>
 
@@ -76,23 +73,21 @@ let currentCode = "";
 
 async function loadCode(){
 
-const ref = document.referrer.toLowerCase();
-
-if(
-!ref.includes("linkvertise") &&
-!ref.includes("link-hub.net")
-){
-
-window.location.replace("https://linkvertise.com");
-return;
-
-}
-
 const res = await fetch(
 "https://raw.githubusercontent.com/fhdhd9795-spec/py/main/password.txt"
 );
 
 currentCode = (await res.text()).trim();
+
+if(currentCode=="OFFLINE"){
+
+document.body.innerHTML = `
+<h1>SERVER OFFLINE</h1>
+`;
+
+return;
+
+}
 
 document.getElementById("code").innerText = currentCode;
 
