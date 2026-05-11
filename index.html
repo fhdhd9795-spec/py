@@ -94,10 +94,9 @@
       background:var(--card2);color:var(--text);
       font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;
       transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+      text-decoration:none;
     }
     .gen-btn:hover{border-color:var(--teal-dim);color:var(--teal)}
-    .gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-    .gen-btn.loading{border-color:rgba(0,229,200,.3);color:var(--teal-dim)}
 
     /* 상태 메시지 */
     .status{
@@ -155,25 +154,24 @@
 
     <div class="divider"><span>실험용</span></div>
 
-    <button class="gen-btn" id="genBtn" onclick="generateNewPassword()">
-      🎲 새 비번 만들기
-    </button>
+    <a class="gen-btn" id="genBtn" href="#" onclick="openActions(event)">
+      🎲 새 비번 만들기 (GitHub Actions)
+    </a>
 
-    <div class="status" id="statusMsg"></div>
+    <div class="status" id="statusMsg">클릭하면 GitHub Actions 페이지가 열려요<br>▶ Run workflow 버튼을 누르면 즉시 생성됩니다</div>
   </div>
 </div>
 <div class="toast" id="toast">✅ 복사됐습니다!</div>
 
 <script>
   // ============================
-  // ⚙ 설정 (여기만 수정)
+  // ⚙ 설정
   // ============================
   const PW_URL     = "https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/py";
-  const SECRET_KEY = "M1n3r@lK3y";   // encryptor, mineral.lua 와 동일하게
-  const GH_TOKEN   = "";  // PAT (contents:write 권한)
-  const GH_OWNER   = "fhdhd9795-spec";
-  const GH_REPO    = "py";
-  const GH_FILE    = "py";
+  const SECRET_KEY = "M1n3r@lK3y";
+
+  // GitHub Actions 수동 실행 URL (새 레포 이름으로 변경하세요)
+  const ACTIONS_URL = "https://github.com/fhdhd9795-spec/여기에_새레포이름/actions/workflows/daily-password.yml";
 
   // ============================
   // 보안
@@ -256,71 +254,9 @@
   // ============================
   // GitHub API - py 파일 업데이트
   // ============================
-  async function getFileSHA(){
-    const res=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,{
-      headers:{Authorization:`token ${GH_TOKEN}`,Accept:'application/vnd.github+json'}
-    });
-    const data=await res.json();
-    return data.sha;
-  }
-
-  async function updateFile(content,sha){
-    const res=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,{
-      method:'PUT',
-      headers:{Authorization:`token ${GH_TOKEN}`,Accept:'application/vnd.github+json','Content-Type':'application/json'},
-      body:JSON.stringify({
-        message:'🔐 Auto: new password generated',
-        content:btoa(unescape(encodeURIComponent(content))),
-        sha
-      })
-    });
-    return res.ok;
-  }
-
-  // ============================
-  // 새 비번 만들기
-  // ============================
-  async function generateNewPassword(){
-    const btn=document.getElementById('genBtn');
-    const status=document.getElementById('statusMsg');
-
-    btn.disabled=true;
-    btn.innerHTML=`<span class="spinner"></span> 생성 중...`;
-    btn.className='gen-btn loading';
-    status.className='status info';
-    status.textContent='새 비번 생성 중...';
-
-    try{
-      // 1. 랜덤 비번 생성
-      const newPwd=generatePassword();
-      status.textContent=`✅ 생성됨: ${newPwd} → 암호화 중...`;
-
-      // 2. 암호화
-      const encrypted=encrypt(newPwd);
-
-      // 3. GitHub 파일 SHA 가져오기
-      status.textContent='GitHub 파일 업데이트 중...';
-      const sha=await getFileSHA();
-
-      // 4. py 파일 업데이트
-      const ok=await updateFile(encrypted,sha);
-
-      if(ok){
-        status.className='status success';
-        status.textContent=`🎉 완료! 새 비번: ${newPwd}`;
-        // 화면 키 새로고침
-        setTimeout(()=>loadKey(),1500);
-      }else{
-        throw new Error('업데이트 실패');
-      }
-    }catch(e){
-      status.className='status error';
-      status.textContent='⚠ 실패: GitHub 토큰을 확인해주세요';
-    }finally{
-      btn.disabled=false;
-      btn.innerHTML='🎲 새 비번 만들기';
-      btn.className='gen-btn';
-    }
+  function openActions(e){
+    e.preventDefault();
+    window.open(ACTIONS_URL, '_blank');
   }
 
   // ============================
