@@ -5,18 +5,20 @@
 <title>ShadowX</title>
 
 <style>
+
 body{
   background:black;
   color:red;
-  text-align:center;
-  padding-top:100px;
   font-family:Arial;
+  text-align:center;
+  padding-top:120px;
 }
 
 h1{
   font-size:60px;
   text-shadow:0 0 20px red;
 }
+
 </style>
 </head>
 
@@ -34,8 +36,23 @@ const res = await fetch(
 
 const code = (await res.text()).trim();
 
-location.href =
-"https://google.com/" + code;
+if(code=="hello123"){
+
+location.href="https://youtube.com";
+
+}
+
+else if(code=="shadow999"){
+
+location.href="https://google.com";
+
+}
+
+else{
+
+document.body.innerHTML="<h1>INVALID CODE</h1>";
+
+}
 
 }
 
