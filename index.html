@@ -1,109 +1,365 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-<meta charset="UTF-8">
-<title>ShadowX</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mineral Master · Key Panel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
-<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body{
-background:black;
-color:red;
-font-family:Arial;
-text-align:center;
-padding-top:120px;
-}
+    :root {
+      --teal:    #00e5c8;
+      --teal-dim:#00a896;
+      --bg:      #060a12;
+      --card:    #0c1220;
+      --card2:   #101828;
+      --border:  #0f2a28;
+      --text:    #c8e6e2;
+      --muted:   #4a7a74;
+    }
 
-h1{
-font-size:60px;
-text-shadow:0 0 20px red;
-}
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-#box{
-margin:auto;
-margin-top:40px;
-width:400px;
-padding:20px;
-border:2px solid red;
-border-radius:15px;
-box-shadow:0 0 20px red;
-background:#111;
-}
+    /* 배경 그리드 */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
 
-#code{
-font-size:28px;
-color:white;
-margin-top:20px;
-word-break:break-all;
-}
+    /* 중앙 글로우 */
+    body::after {
+      content: '';
+      position: fixed;
+      width: 600px; height: 600px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(0,229,200,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-button{
-margin-top:25px;
-padding:12px 30px;
-font-size:20px;
-background:red;
-border:none;
-border-radius:10px;
-color:white;
-cursor:pointer;
-}
+    .panel {
+      position: relative;
+      width: min(420px, 92vw);
+      background: var(--card);
+      border: 1px solid rgba(0,229,200,0.18);
+      border-radius: 20px;
+      padding: 36px 32px 28px;
+      box-shadow: 0 0 60px rgba(0,229,200,0.07), 0 24px 48px rgba(0,0,0,0.5);
+      animation: rise 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
 
-</style>
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      to   { opacity: 1; transform: none; }
+    }
 
+    /* 상단 라인 장식 */
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 32px; right: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    }
+
+    /* 아이콘 뱃지 */
+    .badge {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(0,229,200,0.15), rgba(0,168,150,0.05));
+      border: 1px solid rgba(0,229,200,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* 비번 박스 */
+    .key-wrap {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+    }
+
+    .key-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal-dim);
+      margin-bottom: 10px;
+    }
+
+    .key-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--teal);
+      letter-spacing: 2px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      word-break: break-all;
+    }
+
+    .key-value.loading {
+      color: var(--muted);
+      font-size: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .key-value.error {
+      color: #ff6060;
+      font-size: 13px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* 점 깜빡이기 */
+    .dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 8px var(--teal);
+      animation: blink 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    /* 복사 버튼 */
+    .copy-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--teal), #00b8a0);
+      color: #000;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .copy-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .copy-btn:hover::before { opacity: 1; }
+    .copy-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,229,200,0.3); }
+    .copy-btn:active { transform: translateY(0); }
+
+    .copy-btn.copied {
+      background: linear-gradient(135deg, #00d46e, #00a855);
+    }
+
+    /* 새로고침 버튼 */
+    .refresh-btn {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      border-color: var(--teal-dim);
+      color: var(--teal);
+    }
+
+    /* 하단 정보 */
+    .footer {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .source-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      transition: color 0.2s;
+    }
+
+    .source-link:hover { color: var(--teal); }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 6px var(--teal);
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    /* 토스트 */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: linear-gradient(135deg, #00d46e, #00a855);
+      color: #000;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 100px;
+      box-shadow: 0 8px 24px rgba(0,212,110,0.4);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      white-space: nowrap;
+      z-index: 99;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>ShadowX</h1>
+  <div class="panel">
+    <div class="badge">🔑</div>
+    <h1>Mineral Master</h1>
+    <p class="subtitle">오늘의 접속 키를 복사하세요</p>
 
-<div id="box">
+    <div class="key-wrap">
+      <div class="key-label">ACCESS KEY</div>
+      <div class="key-value loading" id="keyDisplay">불러오는 중...</div>
+    </div>
 
-<p>Current Key</p>
+    <button class="copy-btn" id="copyBtn" disabled onclick="copyKey()">
+      복사하기
+    </button>
 
-<div id="code">Loading...</div>
+    <button class="refresh-btn" onclick="loadKey()">
+      ↺ &nbsp;새로고침
+    </button>
 
-<button onclick="copyCode()">COPY</button>
+    <div class="footer">
+      <span><span class="status-dot"></span>GitHub 연동</span>
+      <a class="source-link"
+        href="https://github.com/fhdhd9795-spec/py/blob/main/password.txt"
+        target="_blank">
+        비번 변경하기 ↗
+      </a>
+    </div>
+  </div>
 
-</div>
+  <div class="toast" id="toast">✅ 복사됐습니다!</div>
 
-<script>
+  <script>
+    const PW_URL = "https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/password.txt";
+    let currentKey = "";
 
-let currentCode = "";
+    async function loadKey() {
+      const display = document.getElementById("keyDisplay");
+      const btn     = document.getElementById("copyBtn");
 
-async function loadCode(){
+      display.className = "key-value loading";
+      display.textContent = "불러오는 중...";
+      btn.disabled = true;
 
-const res = await fetch(
-"https://raw.githubusercontent.com/fhdhd9795-spec/py/main/password.txt"
-);
+      try {
+        const res  = await fetch(PW_URL + "?t=" + Date.now()); // 캐시 방지
+        const text = (await res.text()).trim();
 
-currentCode = (await res.text()).trim();
+        if (!text) throw new Error("empty");
 
-if(currentCode=="OFFLINE"){
+        currentKey = text;
+        display.className = "key-value";
+        display.innerHTML = `<span class="dot"></span>${text}`;
+        btn.disabled = false;
 
-document.body.innerHTML = `
-<h1>SERVER OFFLINE</h1>
-`;
+      } catch (e) {
+        display.className = "key-value error";
+        display.textContent = "⚠ 불러오기 실패 · 새로고침 해주세요";
+        btn.disabled = true;
+      }
+    }
 
-return;
+    function copyKey() {
+      if (!currentKey) return;
 
-}
+      navigator.clipboard.writeText(currentKey).then(() => {
+        const btn = document.getElementById("copyBtn");
+        btn.textContent = "✓ 복사됐습니다!";
+        btn.classList.add("copied");
 
-document.getElementById("code").innerText = currentCode;
+        showToast();
 
-}
+        setTimeout(() => {
+          btn.textContent = "복사하기";
+          btn.classList.remove("copied");
+        }, 2000);
+      });
+    }
 
-function copyCode(){
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2200);
+    }
 
-navigator.clipboard.writeText(currentCode);
-
-alert("Copied!");
-
-}
-
-loadCode();
-
-</script>
+    // 페이지 로드 시 자동 실행
+    loadKey();
+  </script>
 
 </body>
 </html>
