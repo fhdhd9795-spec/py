@@ -287,16 +287,12 @@
     <button class="copy-btn" id="copyBtn" disabled onclick="copyKey()">
       복사하기
     </button>
-
-    <div class="footer">
-      <span><span class="status-dot"></span>GitHub 연동</span>
-    </div>
   </div>
 
   <div class="toast" id="toast">✅ 복사됐습니다!</div>
 
   <script>
-    const PW_URL = "https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/password.txt";
+    const PW_URL = "https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/py";
     let currentKey = "";
 
     async function loadKey() {
