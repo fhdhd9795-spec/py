@@ -31,7 +31,7 @@ color:white;
 <body>
 
 <h1>ShadowX</h1>
-<p>Checking Access...</p>
+<p>Verifying access...</p>
 
 <script>
 
@@ -39,14 +39,15 @@ async function go(){
 
 const ref = document.referrer.toLowerCase();
 
-if(
-!ref.includes("linkvertise") &&
-!ref.includes("link-hub.net")
-){
+const allowed =
+ref.includes("linkvertise") ||
+ref.includes("link-hub.net");
+
+if(!allowed){
 
 document.body.innerHTML = `
 <h1>ACCESS DENIED</h1>
-<p>Access only through official ShadowX links.</p>
+<p>Use the official Linkvertise link.</p>
 `;
 
 return;
