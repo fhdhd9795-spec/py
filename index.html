@@ -39,17 +39,12 @@ async function go(){
 
 const ref = document.referrer.toLowerCase();
 
-const allowed =
-ref.includes("linkvertise") ||
-ref.includes("link-hub.net");
+if(
+!ref.includes("linkvertise") &&
+!ref.includes("link-hub.net")
+){
 
-if(!allowed){
-
-document.body.innerHTML = `
-<h1>ACCESS DENIED</h1>
-<p>Use the official Linkvertise link.</p>
-`;
-
+window.location.replace("https://linkvertise.com");
 return;
 
 }
