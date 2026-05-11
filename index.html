@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
 <meta charset="UTF-8">
 <title>ShadowX</title>
@@ -7,16 +8,21 @@
 <style>
 
 body{
-  background:black;
-  color:red;
-  font-family:Arial;
-  text-align:center;
-  padding-top:120px;
+background:black;
+color:red;
+font-family:Arial;
+text-align:center;
+padding-top:120px;
 }
 
 h1{
-  font-size:60px;
-  text-shadow:0 0 20px red;
+font-size:60px;
+text-shadow:0 0 20px red;
+}
+
+p{
+font-size:20px;
+color:white;
 }
 
 </style>
@@ -24,33 +30,46 @@ h1{
 
 <body>
 
-<h1>ShadowX Loading...</h1>
+<h1>ShadowX</h1>
+<p>Checking Access...</p>
 
 <script>
 
 async function go(){
 
+const ref = document.referrer.toLowerCase();
+
+if(
+!ref.includes("linkvertise") &&
+!ref.includes("link-hub.net")
+){
+
+document.body.innerHTML = `
+<h1>ACCESS DENIED</h1>
+<p>Access only through official ShadowX links.</p>
+`;
+
+return;
+
+}
+
 const res = await fetch(
-"https://raw.githubusercontent.com/fhdhd9795-spec/py/refs/heads/main/password.txt"
+"https://raw.githubusercontent.com/fhdhd9795-spec/py/main/password.txt"
 );
 
 const code = (await res.text()).trim();
 
-if(code=="hello123"){
+if(code=="hello12333333333311"){
 
-location.href="https://youtube.com";
-
-}
-
-else if(code=="shadow999"){
-
-location.href="https://google.com";
+window.location.href = "https://google.com";
 
 }
 
 else{
 
-document.body.innerHTML="<h1>INVALID CODE</h1>";
+document.body.innerHTML = `
+<h1>INVALID CODE</h1>
+`;
 
 }
 
